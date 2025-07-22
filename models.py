@@ -1,13 +1,7 @@
 from app import app
 from flask_sqlalchemy import SQLAlchemy
-
+from werkzeug.security import generate_password_hash
 db = SQLAlchemy(app)
-
-class Admin(db.Model):
-    __tablename__ = 'admin'
-    admin_id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(40), unique=True)
-    password = db.Column(db.String(256), nullable=False)
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -15,7 +9,7 @@ class User(db.Model):
     email = db.Column(db.String(40), unique=True)
     password = db.Column(db.String(256), nullable=False)
     name = db.Column(db.String(64), nullable=True)
-    phone = db.Column(db.CHAR(10), nullable=True)
+    is_admin = db.Column(db.Boolean, nullable = False, default = False)
 
 class Lot(db.Model):
     __tablename__ = 'lot'
@@ -57,4 +51,12 @@ class Reserve(db.Model):
 
 with app.app_context():
     db.create_all()
+    #if admin exists, else create admin
+    admin = User.query.filter_by(is_admin = True).first()
+    if not admin:
+        passhash = generate_password_hash('admin')
+        admin = User(email = 'admin@lotandfound.com', password = passhash, name = 'Admin', is_admin=True)
+        db.session.add(admin)
+        db.session.commit()
+
     

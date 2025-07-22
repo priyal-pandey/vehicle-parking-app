@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Antonio&family=Barlow+Semi+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chango&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Slackside+One&display=swap');
+*{
+    margin:0px;
+    padding:0px;
+}
+
+body{
+
+    font-family: 'Barlow Semi Condensed';
+    background:#FEFEF0;
+    min-height:100vh;
+}
+
+.navbar-brand{
+    font-family:'Antonio';
+    color:#030500;
+}
+nav small{
+    font-family: 'Slackside One';
+    font-weight: bold;
+}
+nav small span{
+       color: #95d5d3;
+}
+
+.my-nav-link{
+    background-color: #b4e6e4;
+    font-weight: bold;
+    color:#030500;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.my-nav-link:hover{
+    background-color: #95d5d3;
+}
+
+.navbar-toggler{
+    border:none;
+    background-color: rgba(255, 253, 236, 0.103);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 2px #00000017;
+  
+}
+
+ .auth-box{
+    justify-self: center;
+    box-shadow: 0.5px 0.5px 0.5px 1px rgba(22, 29, 32, 0.036);
+    border-radius: 10px;
+    width: 100%;
+    max-width:450px;
+    margin:20px;
+    margin-top:70px !important;
+    background-color: #ffffff31;
+}
+.my-check:checked{
+    background-color: #000000d0;
+    border-color:#21212181;
+}
+
+.auth-box button{
+    width: 100%;
+    color: #000000;
+    font-weight: bold;
+    background-color: #b4e6e4;
+    border-radius: 5px;
+}
+.auth-box button:hover{
+    background-color: #030500c5;
+    color: #FEFEF0;
+}
+
+.auth-box h5{
+    font-weight:bolder;
+    font-size:25px;
+    color: #030500;
+    letter-spacing: 1px;
+}
+.auth-box a{
+    color:#03050087;
+    font-weight: bold;
+}
+button{
+    letter-spacing: 1px;
+}
+
+.my-btn{
+    color: #000000;
+    font-weight: bold;
+    background-color: #b4e6e4;
+    border-radius: 5px;
+}
+
+.my-btn:hover{
+    background-color:#95d5d3;
+    color:#000000;
+}
+
+.my-input{
+    background-color: #fefef049;
+    border-color:#00000019;
+    border-width:1px;
+    border-radius: 15px;
+    font-weight:bold;
+}
+
+.my-input:focus{
+    background-color: #fefef049;
+    border-color:#0000000f;
+    border-width:1px;
+    border-radius: 15px;
+    box-shadow: none;
+}
+
+input:-webkit-autofill {
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.alt-link{
+    color:rgb(31, 31, 31) !important;
+}
+.content{
+    min-height:86vh;
+}
+footer div{
+    height: 40px;
+}
+
+.my-label{
+    font-weight: bold;
+}
+
+
+
+

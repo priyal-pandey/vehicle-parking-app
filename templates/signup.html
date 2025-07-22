@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+    <div class="auth-box mt-4 p-4 border border-1">
+        <h5 class="text-center display-5">SIGN UP</h5>
+        <form action="" class="auth-form d-block mx-auto" method="POST">
+            <div class="form-floating my-3">
+                <input type="email" class="form-control my-input border-3" id="email" name="email" placeholder="name@example.com" required>
+                <label for="email" class="my-label">Email address</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control my-input border-3" id="name" name="name" placeholder="name">
+                <label for="name" class="my-label">Name</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control my-input border-3" id="password1" name="password1" placeholder="Password" required>
+                <label for="password1" class="my-label">Password</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control my-input border-3" id="password2" name="password2" placeholder="Password" required>
+                <label for="password2" class="my-label">Confirm Password</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input my-check border-3" id="agree-valid" required>
+                <label class="form-check-label" for="agree-valid">All the above information is correct</label>
+            </div>
+            <button type="submit" class="btn border border-3 border-dark">Register as a User</button>
+        </form>
+        <small class="text-center d-block mt-3"><a href="{{url_for('login')}}" class="alt-link">Have an account? Login</a></small>
+    </div>
+{% endblock %}

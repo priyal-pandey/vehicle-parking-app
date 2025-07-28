@@ -1,3 +1,32 @@
 {% extends "base.html" %}
-{% block title %}{% endblock %}
-{% block content %}{% endblock %}
+{% block title %}Book Spot{% endblock %}
+{% block content %}
+
+<h1 class="display-5">Book Parking Spot</h1>
+<form class="row g-3">
+  <div class="col-12">
+    <label for="spot_id" class="form-label my-label">Spot ID</label>
+    <input type="text" class="form-control my-input" id="spot_id" readonly>
+  </div>
+    <div class="col-12">
+    <label for="lot_id" class="form-label my-label">Lot ID</label>
+    <input type="text" class="form-control my-input" id="lot_id" readonly>
+  </div>
+  <div class="col-12">
+    <label for="user_id" class="form-label my-label">User ID</label>
+    <input type="text" class="form-control my-input" id="user_id" readonly>
+  </div>
+  <div class="col-12">
+    <label for="price" class="form-label my-label">Price per Hour</label>
+    <input type="text" class="form-control my-input" id="price" readonly>
+  </div>
+  <div class="col-12">
+    <label for="vno" class="form-label my-label">Vehicle Number</label>
+    <input type="text" class="form-control my-input" id="vno" placeholder="XX88 XY8888" required>
+  </div>
+  <div class="col-12">
+    <button type="submit" class="btn my-btn">Book</button>
+    <a href="{{url_for('admin')}}" class="btn my-btn">Cancel</a>
+  </div>
+</form>
+{% endblock %}

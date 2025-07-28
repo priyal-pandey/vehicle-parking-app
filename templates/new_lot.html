@@ -1,3 +1,40 @@
 {% extends "base.html" %}
-{% block title %}{% endblock %}
-{% block content %}{% endblock %}
+{% block title %}New Parking lot{% endblock %}
+{% block content %}
+
+<h1 class="display-5">New Parking Lot</h1>
+<form class="row g-3" method="POST">
+  <div class="col-12">
+    <label for="prime_loc" class="form-label my-label">Prime Location Name</label>
+    <input type="text" name = "prime_loc" class="form-control my-input" placeholder="Area or Landmark" id="prime_loc" required>
+  </div>
+  <div class="col-12">
+    <label for="address" class="form-label my-label">Address</label>
+    <textarea name = "address" class="form-control my-input" id="address" placeholder="123 Main Road" required></textarea>
+  </div>
+  <div class="col-12">
+    <label for="pin" class="form-label my-label">PIN Code</label>
+    <input name = "pin" type="text" class="form-control my-input" id="pin" placeholder="6-digit pincode" required>
+  </div>
+  <div class="col-md-6">
+    <label for="max_spots" class="form-label my-label">Maximum number of spots</label>
+    <input name = "max_spots" type="number" class="form-control my-input" id="max_spots" min="3" placeholder="3 and above" required>
+  </div>
+  <div class="col-md-6">
+    <label for="price" class="form-label my-label">Price per hour (₹)</label>
+    <input name = "price" type="number" class="form-control my-input" id="price" min="0" required>
+  </div>
+  <div class="col-12">
+    <div class="form-check">
+      <input class="form-check-input my-input" type="checkbox" id="is_shaded" name = "is_shaded">
+      <label class="form-check-label my-label" for="is_shaded">
+        This parking lot is shaded
+      </label>
+    </div>
+  </div>
+  <div class="col-12">
+    <button type="submit" class="btn my-btn"><i class="fas fa-plus"></i> Create Lot</button>
+    <a href="{{url_for('admin')}}" class="btn my-btn">Cancel</a>
+  </div>
+</form>
+{% endblock %}

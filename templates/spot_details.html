@@ -1,3 +1,24 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
-{% block content %}{% endblock %}
+{% block content %}
+<h1 class="display-5">Spot #{{spot.spot_id}}</h1>
+<form class="row g-3">
+  <div class="col-12">
+    <label for="spot_id" class="form-label my-label">Spot ID</label>
+    <input type="text" class="form-control my-input" value="{{spot.spot_id}}" id="spot_id" readonly>
+  </div>
+  <div class="col-12">
+    <label for="lot_id" class="form-label my-label">Lot ID</label>
+    <input type="text" class="form-control my-input" id="lot_id" value="{{spot.lot_id}}" readonly>
+  </div>
+  <div class="col-12">
+    <label for="status" class="form-label my-label">Status</label>
+    <input type="text" class="form-control my-input" id="status" value="{{spot.status}}" readonly>
+  </div>
+ 
+  <div class="col-12">
+    <a href="{{url_for('admin')}}" class="btn my-btn">Close</a>
+  </div>
+</form>
+{% endblock %}
+

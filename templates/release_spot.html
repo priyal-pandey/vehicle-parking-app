@@ -1,3 +1,32 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
-{% block content %}{% endblock %}
+{% block content %}
+
+<h1 class="display-5">Release Parking Spot</h1>
+<form class="row g-3">
+  <div class="col-12">
+    <label for="spot_id" class="form-label my-label">Spot ID</label>
+    <input type="text" class="form-control my-input" id="spot_id">
+  </div>
+  <div class="col-12">
+    <label for="pin" class="form-label my-label">User ID</label>
+    <input type="text" class="form-control my-input" id="pin">
+  </div>
+  <div class="col-12">
+    <label for="pin" class="form-label my-label">Parking Time</label>
+    <input type="text" class="form-control my-input" id="pin">
+  </div>
+  <div class="col-12">
+    <label for="pin" class="form-label my-label">Release Time</label>
+    <input type="text" class="form-control my-input" id="pin">
+  </div>
+  <div class="col-12">
+    <label for="pin" class="form-label my-label">Total Cost</label>
+    <input type="text" class="form-control my-input" id="pin">
+  </div>
+  <div class="col-12">
+    <button type="submit" class="btn my-btn">Release</button>
+    <a href="{{url_for('admin')}}" class="btn my-btn">Close</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,6 +1,7 @@
 from app import app
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
+
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -18,16 +19,17 @@ class Lot(db.Model):
     address = db.Column(db.String(150), nullable=False)
     pincode = db.Column(db.CHAR(6), nullable=False)
     price_per_hr = db.Column(db.Double(),nullable = False)
-    max_slots = db.Column(db.Integer,nullable=False)
-    is_shaded = db.Column(db.Boolean)
+    max_spots = db.Column(db.Integer,nullable=False)
+    is_shaded = db.Column(db.Boolean, default=False)
 
-    spots = db.relationship('Spot', backref='Lot', lazy=True)
+    spots = db.relationship('Spot', backref = 'lot', cascade ="all, delete-orphan", lazy=True)
+
 
 class Spot(db.Model):
     __tablename__ = 'spot'
     spot_id = db.Column(db.Integer, primary_key=True)
-    lot_id = db.Column(db.Integer, db.ForeignKey('lot.lot_id'), nullable=False)
-    status = db.Column(db.CHAR(1), nullable=False, default='A')
+    lot_id = db.Column(db.Integer, db.ForeignKey('lot.lot_id', ondelete='CASCADE'), nullable=False)
+    status = db.Column(db.CHAR(1), nullable=False, default='a')
 
 class Reserve(db.Model):
     __tablename__ = 'reserve'
@@ -57,6 +59,4 @@ with app.app_context():
         passhash = generate_password_hash('admin')
         admin = User(email = 'admin@lotandfound.com', password = passhash, name = 'Admin', is_admin=True)
         db.session.add(admin)
-        db.session.commit()
-
-    
+        db.session.commit() 

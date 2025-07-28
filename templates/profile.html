@@ -2,34 +2,31 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<h1 class="display-2">Hello, {{user.name}}!</h1>
+
+<h5 class="display-5">Hello, {{user.name}}!</h1>
 <form action="" method="POST" class="form">
-    <div class="mb-3 row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
-        <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value={{user.email}}>
-        </div>
+    <div class="form-floating mb-3 row">
+        <input type="email"readonly class="form-control my-input" id="floatingInputValue" name = "email" placeholder="name@example.com" value="{{user.email}}" required>
+        <label class="my-label" for="floatingInputValue">Email</label>
     </div>
-    <div class="mb-3 row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
-        <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value={{user.name}}>
-        </div>
+    <div class="form-floating mb-3 row">
+        <input type="text" class="form-control my-input" id="floatingInputValue" name = "name" placeholder="name@example.com" value={{user.name}} required>
+        <label class="my-label" for="floatingInputValue">Name</label>
+    </div>
+    <div class="form-floating mb-3 row">
+        <input type="password" class="form-control my-input" id="password1" name="cpassword" placeholder="Password" required>
+        <label class="my-label" for="password1">Current Password</label>
     </div>
     <div class="form-floating mb-3 row">
         <input type="password" class="form-control my-input" id="password1" name="password1" placeholder="Password" required>
-        <label for="password1">Current Password</label>
+        <label class="my-label" for="password2">New Password</label>
     </div>
     <div class="form-floating mb-3 row">
         <input type="password" class="form-control my-input" id="password2" name="password2" placeholder="Password" required>
-        <label for="password2">New Password</label>
+        <label class="my-label" for="password3">Confirm Password</label>
     </div>
-    <div class="form-floating mb-3 row">
-        <input type="password" class="form-control my-input" id="password3" name="password3" placeholder="Password" required>
-        <label for="password3">Confirm Password</label>
-    </div>
-    <button type="submit" class="btn btn-primary my-btn border border-3 border-dark">Change Password</button>
+    <button type="submit" class="btn my-btn my-2">Change Password</button>
 </form>
 
-<a href="{{url_for('logout')}}" class="btn btn-primary my-btn border border-3 border-dark">Logout</a>
+<a href="{{url_for('logout')}}" class="btn my-btn">Logout</a>
 {% endblock %}

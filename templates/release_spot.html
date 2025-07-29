@@ -1,32 +1,32 @@
 {% extends "base.html" %}
-{% block title %}{% endblock %}
+{% block title %}Release Parking Spot{% endblock %}
 {% block content %}
 
 <h1 class="display-5">Release Parking Spot</h1>
-<form class="row g-3">
+<form class="row g-3", method="POST">
   <div class="col-12">
     <label for="spot_id" class="form-label my-label">Spot ID</label>
-    <input type="text" class="form-control my-input" id="spot_id">
+    <input type="text" class="form-control my-input" id="spot_id" value="{{reservation.spot_id}}" readonly>
   </div>
   <div class="col-12">
-    <label for="pin" class="form-label my-label">User ID</label>
-    <input type="text" class="form-control my-input" id="pin">
+    <label for="user_id" class="form-label my-label">User ID</label>
+    <input type="text" class="form-control my-input" id="user_id" value="{{reservation.user_id}}" readonly>
   </div>
   <div class="col-12">
-    <label for="pin" class="form-label my-label">Parking Time</label>
-    <input type="text" class="form-control my-input" id="pin">
+    <label for="start_time" class="form-label my-label">Parking Time</label>
+    <input type="text" class="form-control my-input" id="start_time" value="{{reservation.start_time.strftime('%d-%m-%y %H:%M:%S')}}" readonly>
   </div>
   <div class="col-12">
-    <label for="pin" class="form-label my-label">Release Time</label>
-    <input type="text" class="form-control my-input" id="pin">
+    <label for="end_time" class="form-label my-label">Release Time</label>
+    <input type="text" class="form-control my-input" id="end_time" name="end_time" value="{{time_now}}" readonly>
   </div>
   <div class="col-12">
-    <label for="pin" class="form-label my-label">Total Cost</label>
-    <input type="text" class="form-control my-input" id="pin">
+    <label for="cost" class="form-label my-label">Total Cost</label>
+    <input type="text" class="form-control my-input" id="cost" name="cost" value="{{cost}}" readonly>
   </div>
   <div class="col-12">
     <button type="submit" class="btn my-btn">Release</button>
-    <a href="{{url_for('admin')}}" class="btn my-btn">Close</a>
+    <a href="{{url_for('home')}}" class="btn my-btn">Close</a>
   </div>
 </form>
 {% endblock %}

@@ -1,6 +1,7 @@
 from app import app
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
+from datetime import datetime,date
 
 db = SQLAlchemy(app)
 
@@ -24,7 +25,6 @@ class Lot(db.Model):
 
     spots = db.relationship('Spot', backref = 'lot', cascade ="all, delete-orphan", lazy=True)
 
-
 class Spot(db.Model):
     __tablename__ = 'spot'
     spot_id = db.Column(db.Integer, primary_key=True)
@@ -37,19 +37,19 @@ class Reserve(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     lot_id = db.Column(db.Integer, db.ForeignKey('lot.lot_id'), nullable=False)
     spot_id = db.Column(db.Integer, db.ForeignKey('spot.spot_id'), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    start_time = db.Column(db.Time,nullable=False)
-    end_time = db.Column(db.Time, nullable=False)
+    start_time = db.Column(db.DateTime,nullable=False, default=datetime.now)
+    end_time = db.Column(db.DateTime, nullable=True)
     price_per_hr = db.Column(db.Double, nullable=False)
     vehicle_num = db.Column(db.String(15), nullable=False)
+    is_ongoing = db.Column(db.Boolean, nullable = False, default = True)
 
-'''class Payment(db.Model):
+class Payment(db.Model):
     __tablename__ = 'payment'
     payment_id = db.Column(db.Integer, primary_key=True)
     r_id = db.Column(db.Integer, db.ForeignKey('reserve.r_id'), nullable=False)
     total_amt = db.Column(db.Double, nullable=False)
     date = db.Column(db.Date)
-    time = db.Column(db.Time)'''
+    time = db.Column(db.Time)
 
 with app.app_context():
     db.create_all()
@@ -59,4 +59,4 @@ with app.app_context():
         passhash = generate_password_hash('admin')
         admin = User(email = 'admin@lotandfound.com', password = passhash, name = 'Admin', is_admin=True)
         db.session.add(admin)
-        db.session.commit() 
+        db.session.commit()

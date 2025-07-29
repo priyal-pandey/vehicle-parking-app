@@ -2,7 +2,87 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<a href="{{url_for('book_spot')}}">Book</a>
-<a href="{{url_for('release_spot')}}">Release</a>
+<h1 class="display-5 mb-3">My Dashboard</h1>
+<h1 class="display-6">Recent Parking History</h1>
+<table class="table my-table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Location</th>
+      <th scope="col">Date</th>
+      <th scope="col">From Time</th>
+      <th scope="col">To Time</th>
+      <th scope="col">Vehicle no.</th>
+      <th scope="col">Price</th>
+      <th scope="col">Action</th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in history|reverse %}
+    <tr>
+      <td scope="row">{{record.r_id}}</td>
+      <td>{{record.lot_id}}</td>
+      <td>{{record.date}}</td>
+      <td>{{record.start_time}}</td>
+      <td>{{record.end_time}}</td>
+      <td>{{record.vehicle_num}}</td>
+      <td>{{record.price_per_hr}}</td>
+      <td>
+        {%if record.is_ongoing %}
+          <a class="btn my-btn" href="{{url_for('release_spot',lot_id = record.lot_id, spot_id = record.spot_id)}}">Release</a>
+        {% else %}
+          Parked Out
+        {% endif %}
+      </td>
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
 
+<h1 class="display-6 my-4">Available Parking Lots</h1>
+
+
+<div class="row g-3">
+    {% if lots|length == 0 %}
+    <h2>No Lots Available</h2>
+    {% else %}
+    {% for lot in lots %}
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+        <div class="lot-card h-100 p-3">
+            <div class="lot-details">
+            {% if lot.price_per_hr == 0 %}
+             <small class="d-block mb-3 price"><i class="fa-solid fa-indian-rupee-sign" style="color: #ffffe3;"></i> FREE </small>
+            {% else %}
+             <small class="d-block mb-3 price"><i class="fa-solid fa-indian-rupee-sign" style="color: #ffffe3;"></i>{{lot.price_per_hr}} /hr </small>
+            {% endif %}
+            {% if lot.is_shaded == true %}
+             <small class="d-block mb-3 shaded"><i class="fa-solid fa-umbrella" style="color: #ffffe3;"></i> Shaded </small>
+            {% else %}
+             <small class="d-block mb-3 open"><i class="fa-solid fa-cloud-sun-rain" style="color: #ffffe3;"></i> Open </small>
+            {% endif %}
+            </div>
+            
+             <h5 class="text-center">Parking Lot #{{lot.lot_id}}</h5>
+             <small class="d-block mb-3 loc border"><i class="fa-solid fa-location-dot" style="color: #ffffe3;"></i> {{lot.prime_loc}}</small>
+            <div class="text-center mb-2 lot-btn">
+                <a class="btn my-btn" href="{{url_for('book_lot', lot_id = lot.lot_id)}}">Book</a>
+                <a class="btn my-btn mx-1" href="{{ url_for('view_lot', lot_id = lot.lot_id) }}">View</a>
+            </div>
+            <div class="row row-cols-5 gx-1 gy-1">
+                {% for spot in lot.spots %}
+                <div class="col text-center">
+                      {% if spot.status == 'a' %}
+                        <span class="spot a d-block m-1"><i class="fa-solid fa-square-parking" style="color: #ffffe3;"></i></span>
+                      {% else %}
+                        <span class="spot o d-block m-1"><i class="fa-solid fa-square-parking" style="color: #ffffe3;"></i></span>
+                      {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
 {% endblock %}
+

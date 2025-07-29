@@ -1,8 +1,9 @@
 from flask import render_template, redirect, url_for, request, flash, session
 from app import app
-from models import db,User,Lot,Spot
+from models import db,User,Lot,Spot, Reserve, Payment
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from datetime import datetime
 
 #decorator for checking if user is logged in
 def auth_required(func):
@@ -19,10 +20,12 @@ def auth_required(func):
 def admin_required(func):
     @wraps(func)
     def inner(*args, **kwargs):
-        if 'user_id'  not in session:
+        if 'user_id' not in session:
             flash("Please login first","warning")
             return redirect(url_for('login'))
         user = User.query.get(session['user_id'])
+        if not user:
+            return redirect(url_for('logout'))
         if user.is_admin == False:
             flash("You are not allowed to access this page","warning")
             return redirect(url_for('home'))
@@ -35,9 +38,13 @@ def admin_required(func):
 @auth_required
 def home():
     user = User.query.get(session['user_id'])
+    if not user:
+        return redirect(url_for('logout'))
     if user.is_admin:
         return redirect(url_for('admin'))
-    return render_template("user_dashboard.html")
+    lots = Lot.query.all()
+    history = Reserve.query.filter_by(user_id = user.user_id)
+    return render_template("user_dashboard.html",lots = lots, history = history)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -222,8 +229,9 @@ def edit_lot(lot_id):
 
     return render_template("edit_lot.html", lot = lot)
 
-@app.route('/admin/lot/<int:lot_id>')
-@admin_required
+
+@app.route('/lot/<int:lot_id>')
+@auth_required
 def view_lot(lot_id):
     lot = Lot.query.get(lot_id)
     if lot:
@@ -233,11 +241,17 @@ def view_lot(lot_id):
         return redirect(url_for('admin'))
 
 
+
 @app.route('/admin/lot/<int:lot_id>/delete-lot')
 @admin_required
 def delete_lot(lot_id):
     lot = Lot.query.get(lot_id)
     if lot:
+        reservation = Reserve.query.filter_by(lot_id = lot_id,is_ongoing = True).first()
+        if reservation:
+            flash("Cannot delete a lot that has been occupied","error")
+            return redirect(url_for('admin'))
+        
         db.session.delete(lot)
         db.session.commit()
         flash("Lot #"+str(lot_id)+" deleted successfully!","success")
@@ -246,15 +260,18 @@ def delete_lot(lot_id):
         flash("Lot not found","error")
     return render_template("admin_dashboard.html")
 
+
 @app.route('/admin/lot/<int:lot_id>/spot/<int:spot_id>/view')
 @admin_required
 def spot_details(lot_id, spot_id):
     spot = Spot.query.get(spot_id)
+    reservation = Reserve.query.filter_by(spot_id = spot_id,is_ongoing = True).first()
     if spot:
-        return render_template("spot_details.html", spot = spot)
+        return render_template("spot_details.html", spot = spot, reservation = reservation )
     else:
         flash("Spot does not exist","error")
         return redirect(url_for('admin'))
+
 
 @app.route('/admin/users')
 @admin_required
@@ -262,20 +279,80 @@ def view_users():
     users = User.query.all()
     return render_template("ad_view_users.html", users = users)
 
+
 @app.route('/admin/search')
 @admin_required
 def search():
     return render_template("admin_search.html")
 
-@app.route('/book-spot', methods=['GET','POST'])
+
+@app.route('/lot/<int:lot_id>/book-lot', methods=['GET','POST'])
 @auth_required
-def book_spot():
+def book_lot(lot_id):
+    spot = Spot.query.filter_by(lot_id = lot_id,status = 'a').first()
+    if not spot:
+        flash("Sorry, no spots available in this lot. Please book another lot","error")
+        return redirect(url_for('home'))
+    lot = Lot.query.get(lot_id)
+    user = User.query.get(session["user_id"])
     if request.method == 'POST':
+        vehicle_num = request.form.get('vno')
+        reservation = Reserve(user_id = user.user_id,lot_id = lot_id, spot_id = spot.spot_id, price_per_hr = lot.price_per_hr, vehicle_num = vehicle_num)
+        spot.status = 'o'
+        db.session.add(reservation)
+        db.session.commit()
+
         flash("Successfully Booked Parking spot", "success")
         return redirect(url_for('home'))
-    return render_template("book_spot.html")
+    return render_template("book_spot.html", spot = spot, lot = lot, user = user)
 
-@app.route('/release-spot')
+
+@app.route('/lot/<int:lot_id>/spot/<int:spot_id>/release-spot', methods=['GET','POST'])
 @auth_required
-def release_spot():
-    return render_template("release_spot.html")
+def release_spot(lot_id,spot_id):
+    reservation = Reserve.query.filter_by(spot_id = spot_id, is_ongoing = True).first()
+    if not reservation:
+        flash("Spot isn't occupied or doesn't exist","error")
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form_end_time = request.form.get('end_time')
+        cost = int(request.form.get('cost'))
+        end_time = datetime.strptime(form_end_time, "%d-%m-%y %H:%M:%S")
+        reservation.end_time = end_time
+        db.session.commit()
+        if cost == 0:
+            reservation.is_ongoing = False
+            spot = Spot.query.get(spot_id)
+            spot.status = 'a'
+            db.session.commit()
+            flash("Released Parking Spot. Have a great day.","success")
+            return redirect(url_for('home'))
+        payment = Payment(r_id = reservation.r_id, total_amt = cost)
+        db.session.add(payment)
+        db.session.commit()
+        flash("Please pay ₹ "+str(cost)+" to release parking spot.","success")
+        return redirect(url_for('payment', p_id = payment.payment_id))
+
+    time_now = datetime.now()
+    time_occupied = (time_now - reservation.start_time).total_seconds()/3600
+    cost = round(reservation.price_per_hr * time_occupied)
+    time_now_form = time_now.strftime("%d-%m-%y %H:%M:%S")
+    return render_template("release_spot.html", reservation = reservation, time_now = time_now_form, cost = cost)
+
+@app.route('/payment/<int:p_id>',methods=['GET','POST'])
+@auth_required
+def payment(p_id):
+    payment = Payment.query.get(p_id)
+    reservation = Reserve.query.get(payment.r_id)
+
+    if request.method == 'POST':
+        reservation.is_ongoing = False
+        spot = Spot.query.get(reservation.spot_id)
+        spot.status = 'a'
+        db.session.commit()
+        flash("Released Parking Spot. Have a great day.","success")
+        return redirect(url_for('home'))
+
+    return render_template("payment.html", reservation = reservation, payment = payment)
+    

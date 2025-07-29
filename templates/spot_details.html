@@ -15,6 +15,16 @@
     <label for="status" class="form-label my-label">Status</label>
     <input type="text" class="form-control my-input" id="status" value="{{spot.status}}" readonly>
   </div>
+  {% if reservation %}
+  <div class="col-12">
+    <label for="usr_occupied" class="form-label my-label">Occupied User ID</label>
+    <input type="text" class="form-control my-input" id="usr_occupied" value="{{reservation.user_id}}" readonly>
+  </div>
+  <div class="col-12">
+    <label for="vno" class="form-label my-label">Vehicle Number</label>
+    <input type="text" class="form-control my-input" id="vno" value="{{reservation.vehicle_num}}" readonly>
+  </div>
+  {% endif %}
  
   <div class="col-12">
     <a href="{{url_for('admin')}}" class="btn my-btn">Close</a>

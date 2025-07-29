@@ -13,6 +13,9 @@
 <h1 class="display-6 my-4">Parking Lots</h1>
 
 <div class="row g-3">
+    {% if lots|length == 0 %}
+    <h2>No Lots Created</h2>
+    {% else %}
     {% for lot in lots %}
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
         <div class="lot-card h-100 p-3">
@@ -39,12 +42,17 @@
             <div class="row row-cols-5 gx-1 gy-1">
                 {% for spot in lot.spots %}
                 <div class="col text-center">
+                    {% if spot.status == 'a' %}
                         <a class="spot a d-block m-1" href="{{ url_for('spot_details', spot_id = spot.spot_id, lot_id = spot.lot_id)}}"><i class="fa-solid fa-square-parking" style="color: #ffffe3;"></i></a>
-                </div>
+                    {% else %}
+                        <a class="spot o d-block m-1" href="{{ url_for('spot_details', spot_id = spot.spot_id, lot_id = spot.lot_id)}}"><i class="fa-solid fa-square-parking" style="color: #ffffe3;"></i></a>
+                    {% endif %}
+                    </div>
                 {% endfor %}
             </div>
         </div>
     </div>
     {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}

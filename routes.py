@@ -316,12 +316,6 @@ def view_users():
     users = User.query.all()
     return render_template("admin/view_users.html", users = users)
 
-
-@app.route('/admin/search')
-@admin_required
-def search():
-    return render_template("admin/admin_search.html")
-
 @app.route('/admin/view-parking-records')
 @admin_required
 def admin_view_parking():
@@ -390,6 +384,9 @@ def payment(p_id):
     reservation = Reserve.query.get(payment.reserve_id)
 
     if request.method == 'POST':
+        pay_method = request.form.get('method')
+        payment.transaction_date = datetime.now()
+        payment.payment_method = pay_method
         reservation.is_ongoing = False
         spot = Spot.query.get(reservation.spot_id)
         spot.status = 'a'
@@ -404,4 +401,10 @@ def view_summary():
     user = User.query.get(session["user_id"])
     history = Reserve.query.filter_by(user_id = user.user_id).all()
     return render_template('user/user_summary.html', history = history)
+
+@app.route('/transaction-history')
+def transaction_history():
+    user = User.query.get(session["user_id"])
+    transactions = transactions = db.session.query(Payment).join(Reserve, Payment.reserve_id == Reserve.reserve_id).filter(Reserve.user_id == user.user_id).all()
+    return render_template('user/transaction_history.html', transactions = transactions)
     

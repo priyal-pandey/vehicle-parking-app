@@ -2,7 +2,7 @@
 {% block title %}Payment{% endblock %}
 {% block content %}
 <div class="container my-5 my-container">
-<h1 class="display-6 my-display my-4">Payment</h1>
+<h1 class="display-6 my-display my-4">Payment of {{payment.total_amt}}</h1>
 <form class="row g-3", method="POST">
   <div class="col-12">
     <label for="spot_id" class="form-label my-label">Spot ID</label>
@@ -13,10 +13,18 @@
     <input type="text" class="form-control my-input" id="cost" name="cost" value="{{payment.total_amt}}" readonly>
   </div>
   <div class="col-12">
+    <label for="method" class="form-label my-label">Payment Method</label>
+    <select class="form-select my-input method" aria-label="pay method" name="method" id="method">
+      <option selected>Select Payment Method</option>
+      <option value="UPI">UPI</option>
+      <option value="Credit Card">Credit Card</option>
+      <option value="Debit Card">Debit Card</option>
+    </select>
+  </div>
+  <div class="col-12">
     <button type="submit" class="btn my-btn"><i class="fa-solid fa-money-check-dollar" style="color: #ffffe3;"></i> Pay</button>
     <a href="{{url_for('home')}}" class="btn my-btn">Close</a>
   </div>
-  <button class="btn my-btn" onclick="window.print();">Print</button>
 </form>
 </div>
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Transaction History{% endblock %}
+{% block content %}
+{% include "user/user_nav.html" with context %}
+<div class="container my-5">
+<h1 class="display-6 my-display my-4">My Transactions</h1>
+<table class="table my-table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Reservation_ID</th>
+      <th scope="col">Total Amount</th>
+      <th scope="col">Payment Method</th>
+      <th scope="col">Paid On</th>
+  
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in transactions|reverse %}
+    <tr>
+      <td scope="row">{{record.payment_id}}</td>
+      <td>{{record.reserve_id}}</td>
+      <td scope="row">{{record.total_amt}}</td>
+      <td scope="row">{{record.payment_method}}</td>
+      <td>{{record.transaction_date.strftime('%d-%m-%Y %H:%M:%S')}}</td>
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

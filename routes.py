@@ -103,8 +103,16 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
+        if not email or not name or not password1 or not password2:
+            flash("Please fill all fields","warning")
+            return render_template("signup.html")
+        
+        if len(password1) < 8:
+            flash("Password must be at least 8 characters long","error")
+            return render_template("signup.html")
+        
         user = User.query.filter_by(email = email).first()
-        #validations
+        
         if user:
             flash("An account with this email already exists","error")
         elif password1 != password2:
@@ -130,9 +138,14 @@ def profile():
         pass1 = request.form.get('password1')
         pass2 = request.form.get('password2')
 
-            #validations
+        
         if name and cpass and pass1 and pass2:
             if check_password_hash(user.password,cpass):
+                
+                if len(pass1) < 8:
+                    flash("Password must be at least 8 characters long","error")
+                    return render_template('profile.html', user = user)
+                
                 if pass1 == pass2:
                     user.name = name
                     user.password = generate_password_hash(pass1)

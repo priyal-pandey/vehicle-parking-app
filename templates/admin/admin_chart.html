@@ -1,0 +1,61 @@
+
+{% extends "base.html" %}
+{% block title %}Stats{% endblock %}
+{% block content %}
+{% include "admin/admin_nav.html" with context %}
+
+  <div class="container my-5 my-container">
+    <h1 class="display-6 my-display my-4">Spots Available vs Occupied</h1>
+    <div>
+      <canvas id="myChart"
+              data-occupied="{{ occupied }}"
+              data-vacant="{{ vacant }}">
+      </canvas>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const canvas = document.getElementById('myChart');
+    const occupied = parseInt(canvas.dataset.occupied);
+    const vacant = parseInt(canvas.dataset.vacant);
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: ['Occupied', 'Vacant'],
+        datasets: [{
+          label: 'Number of Spots',
+          data: [occupied, vacant],
+          backgroundColor: ['#DCAE96', '#5F9E9B'],
+          borderColor: ['#ffffe3', '#ffffe3'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Parking Spots: Occupied vs Vacant'
+          },
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  </script>
+{% endblock %}
+
+

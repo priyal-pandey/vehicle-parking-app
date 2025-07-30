@@ -160,7 +160,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-
 @app.route('/admin')
 @admin_required
 def admin():
@@ -397,14 +396,23 @@ def payment(p_id):
     return render_template("user/payment.html", reservation = reservation, payment = payment)
 
 @app.route('/my-summary')
+@auth_required
 def view_summary():
     user = User.query.get(session["user_id"])
     history = Reserve.query.filter_by(user_id = user.user_id).all()
     return render_template('user/user_summary.html', history = history)
 
 @app.route('/transaction-history')
+@auth_required
 def transaction_history():
     user = User.query.get(session["user_id"])
     transactions = transactions = db.session.query(Payment).join(Reserve, Payment.reserve_id == Reserve.reserve_id).filter(Reserve.user_id == user.user_id).all()
     return render_template('user/transaction_history.html', transactions = transactions)
-    
+
+@app.route('/admin-stats')
+@admin_required
+def admin_stats():
+    total_spots = Spot.query.count()
+    occupied = Spot.query.filter_by(status='o').count()
+    vacant = total_spots - occupied
+    return render_template("admin/admin_chart.html", occupied = occupied, vacant = vacant)

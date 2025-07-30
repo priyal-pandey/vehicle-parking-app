@@ -12,8 +12,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Location</th>
-      <th scope="col">From Time</th>
-      <th scope="col">To Time</th>
+      <th scope="col">Start Time</th>
       <th scope="col">Vehicle no.</th>
       <th scope="col">Price</th>
       <th scope="col">Action</th>      
@@ -25,7 +24,6 @@
       <td scope="row">{{record.r_id}}</td>
       <td>{{record.lot_id}}</td>
       <td>{{record.start_time.strftime('%d-%m-%Y %H:%M:%S')}}</td>
-      <td>{{record.end_time}}</td>
       <td>{{record.vehicle_num}}</td>
       <td>{{record.price_per_hr}}</td>
       <td>

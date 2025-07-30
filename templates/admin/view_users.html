@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block title %}{% endblock %}
+{% block title %}View Users{% endblock %}
 {% block content %}
 
 {% include "admin/admin_nav.html" with context %}
-<div class="container my-5">
+<div class="container my-5
+">
 <h1 class="display-6 my-display my-4">List of Users</h1>
  {% include "admin/admin_search.html" with context %}
 <table class="table my-table table-hover">

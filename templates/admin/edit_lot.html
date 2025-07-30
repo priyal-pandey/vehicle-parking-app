@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Edit Parking lot{% endblock %}
 {% block content %}
-
-<h1 class="display-5">Edit Parking Lot #{{lot.lot_id}}</h1>
+<div class="container my-5 my-container">
+<h1 class="display-6 my-display my-4">Edit Parking Lot #{{lot.lot_id}}</h1>
 <form class="row g-3" method="POST">
   <div class="col-12">
     <label for="prime_loc" class="form-label my-label">Prime Location Name</label>
@@ -41,4 +41,5 @@
     <a href="{{url_for('admin')}}" class="btn my-btn">Cancel</a>
   </div>
 </form>
+</div>
 {% endblock %}

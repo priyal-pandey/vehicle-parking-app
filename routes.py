@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, flash, session
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from app import app
 from models import db,User,Lot,Spot, Reserve, Payment
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -42,9 +42,25 @@ def home():
         return redirect(url_for('logout'))
     if user.is_admin:
         return redirect(url_for('admin'))
-    lots = Lot.query.all()
-    history = Reserve.query.filter_by(user_id = user.user_id)
-    return render_template("user_dashboard.html",lots = lots, history = history)
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+    current = Reserve.query.filter_by(user_id = user.user_id,is_ongoing=True).all()
+    if parameter == 'location':
+        lots = Lot.query.filter(Lot.prime_loc.ilike(f'%{query}%')).all()
+        return render_template("user/user_dashboard.html", lots = lots, current = current)
+    if parameter == 'type':
+        if query.lower() == 'shaded':
+            lots = Lot.query.filter_by(is_shaded = True).all()
+            return render_template("user/user_dashboard.html", lots = lots, current = current)
+        elif query.lower() == 'open':
+            lots = Lot.query.filter_by(is_shaded = False).all()
+            return render_template("user/user_dashboard.html", lots = lots, current = current)
+    if parameter == 'price' and query.isdecimal():
+        lots = Lot.query.filter(Lot.price_per_hr <= int(query)).all()
+        return render_template("user/user_dashboard.html", lots = lots, current = current)
+    
+    lots = Lot.query.all()     
+    return render_template("user/user_dashboard.html",lots = lots, current = current)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -148,8 +164,24 @@ def logout():
 @app.route('/admin')
 @admin_required
 def admin():
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+
+    if parameter == 'location':
+        lots = Lot.query.filter(Lot.prime_loc.ilike(f'%{query}%')).all()
+        return render_template("admin/admin_dashboard.html", lots = lots)
+    if parameter == 'type':
+        if query.lower() == 'shaded':
+            lots = Lot.query.filter_by(is_shaded = True).all()
+            return render_template("admin/admin_dashboard.html", lots = lots)
+        elif query.lower() == 'open':
+            lots = Lot.query.filter_by(is_shaded = False).all()
+            return render_template("admin/admin_dashboard.html", lots = lots)
+    if parameter == 'price' and query.isdecimal():
+        lots = Lot.query.filter(Lot.price_per_hr <= int(query)).all()
+        return render_template("admin/admin_dashboard.html", lots = lots)
     lots = Lot.query.all()
-    return render_template("admin_dashboard.html", lots = lots)
+    return render_template("admin/admin_dashboard.html", lots = lots)
 
 @app.route('/admin/lot/add-lot', methods=['GET','POST'])
 @admin_required
@@ -164,7 +196,7 @@ def add_lot():
 
         if prime_loc and address and pin and max_spots and price:
             if is_shaded:
-                new_lot=new_lot = Lot(prime_loc = prime_loc, address=address, pincode = pin, max_spots = max_spots, price_per_hr = price, is_shaded = True)
+                new_lot = Lot(prime_loc = prime_loc, address=address, pincode = pin, max_spots = max_spots, price_per_hr = price, is_shaded = True)
             else:
                 new_lot = Lot(prime_loc = prime_loc, address=address, pincode = pin, max_spots = max_spots, price_per_hr = price)
             db.session.add(new_lot)
@@ -181,7 +213,7 @@ def add_lot():
         
         flash("Please fill out all fields","warning")
 
-    return render_template("new_lot.html")
+    return render_template("admin/new_lot.html")
 
 @app.route('/admin/lot/<int:lot_id>/edit-lot', methods=['GET','POST'])
 @admin_required
@@ -227,7 +259,7 @@ def edit_lot(lot_id):
         flash("Lot not found","error")
         return redirect(url_for('admin'))
 
-    return render_template("edit_lot.html", lot = lot)
+    return render_template("admin/edit_lot.html", lot = lot)
 
 
 @app.route('/lot/<int:lot_id>')
@@ -258,7 +290,7 @@ def delete_lot(lot_id):
         return redirect(url_for('admin'))
     else:
         flash("Lot not found","error")
-    return render_template("admin_dashboard.html")
+    return render_template("admin/admin_dashboard.html")
 
 
 @app.route('/admin/lot/<int:lot_id>/spot/<int:spot_id>/view')
@@ -267,7 +299,7 @@ def spot_details(lot_id, spot_id):
     spot = Spot.query.get(spot_id)
     reservation = Reserve.query.filter_by(spot_id = spot_id,is_ongoing = True).first()
     if spot:
-        return render_template("spot_details.html", spot = spot, reservation = reservation )
+        return render_template("admin/spot_details.html", spot = spot, reservation = reservation )
     else:
         flash("Spot does not exist","error")
         return redirect(url_for('admin'))
@@ -276,14 +308,25 @@ def spot_details(lot_id, spot_id):
 @app.route('/admin/users')
 @admin_required
 def view_users():
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+    if parameter == 'name':
+        users = User.query.filter(User.name.ilike(f'%{query}%')).all()
+        return render_template("admin/view_users.html", users = users)
     users = User.query.all()
-    return render_template("ad_view_users.html", users = users)
+    return render_template("admin/view_users.html", users = users)
 
 
 @app.route('/admin/search')
 @admin_required
 def search():
-    return render_template("admin_search.html")
+    return render_template("admin/admin_search.html")
+
+@app.route('/admin/view-parking-records')
+@admin_required
+def admin_view_parking():
+    records = Reserve.query.all()
+    return render_template("admin/admin_summary.html", records = records)
 
 
 @app.route('/lot/<int:lot_id>/book-lot', methods=['GET','POST'])
@@ -304,7 +347,7 @@ def book_lot(lot_id):
 
         flash("Successfully Booked Parking spot", "success")
         return redirect(url_for('home'))
-    return render_template("book_spot.html", spot = spot, lot = lot, user = user)
+    return render_template("user/book_spot.html", spot = spot, lot = lot, user = user)
 
 
 @app.route('/lot/<int:lot_id>/spot/<int:spot_id>/release-spot', methods=['GET','POST'])
@@ -313,7 +356,7 @@ def release_spot(lot_id,spot_id):
     reservation = Reserve.query.filter_by(spot_id = spot_id, is_ongoing = True).first()
     if not reservation:
         flash("Spot isn't occupied or doesn't exist","error")
-        return redirect('home')
+        return redirect(url_for('home'))
     
     if request.method == 'POST':
         form_end_time = request.form.get('end_time')
@@ -328,7 +371,7 @@ def release_spot(lot_id,spot_id):
             db.session.commit()
             flash("Released Parking Spot. Have a great day.","success")
             return redirect(url_for('home'))
-        payment = Payment(r_id = reservation.r_id, total_amt = cost)
+        payment = Payment(reserve_id = reservation.reserve_id, total_amt = cost)
         db.session.add(payment)
         db.session.commit()
         flash("Please pay ₹ "+str(cost)+" to release parking spot.","success")
@@ -338,13 +381,13 @@ def release_spot(lot_id,spot_id):
     time_occupied = (time_now - reservation.start_time).total_seconds()/3600
     cost = round(reservation.price_per_hr * time_occupied)
     time_now_form = time_now.strftime("%d-%m-%y %H:%M:%S")
-    return render_template("release_spot.html", reservation = reservation, time_now = time_now_form, cost = cost)
+    return render_template("user/release_spot.html", reservation = reservation, time_now = time_now_form, cost = cost)
 
 @app.route('/payment/<int:p_id>',methods=['GET','POST'])
 @auth_required
 def payment(p_id):
     payment = Payment.query.get(p_id)
-    reservation = Reserve.query.get(payment.r_id)
+    reservation = Reserve.query.get(payment.reserve_id)
 
     if request.method == 'POST':
         reservation.is_ongoing = False
@@ -354,5 +397,11 @@ def payment(p_id):
         flash("Released Parking Spot. Have a great day.","success")
         return redirect(url_for('home'))
 
-    return render_template("payment.html", reservation = reservation, payment = payment)
+    return render_template("user/payment.html", reservation = reservation, payment = payment)
+
+@app.route('/my-summary')
+def view_summary():
+    user = User.query.get(session["user_id"])
+    history = Reserve.query.filter_by(user_id = user.user_id).all()
+    return render_template('user/user_summary.html', history = history)
     

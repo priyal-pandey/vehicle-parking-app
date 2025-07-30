@@ -2,8 +2,8 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-
-<h5 class="display-5">Hello, {{user.name}}!</h1>
+<div class="container my-5 my-container">
+<h1 class="display-6 my-display my-4">Hello, {{user.name}}!</h1>
 <form action="" method="POST" class="form">
     <div class="form-floating mb-3 row">
         <input type="email"readonly class="form-control my-input" id="floatingInputValue" name = "email" placeholder="name@example.com" value="{{user.email}}" required>
@@ -29,4 +29,5 @@
 </form>
 
 <a href="{{url_for('logout')}}" class="btn my-btn">Logout</a>
+</div>
 {% endblock %}

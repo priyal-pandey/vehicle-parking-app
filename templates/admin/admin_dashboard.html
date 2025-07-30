@@ -2,19 +2,16 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1 class="display-5">ADMIN DASHBOARD</h1>
+{% include "admin/admin_nav.html" %}
+<div class="container my-5">
 
-<div class="mb-3">
-    <a class="btn my-btn" href="{{ url_for('add_lot') }}"><i class="fas fa-plus"></i> Add Parking Lot</a>
-    <a class="btn my-btn" href="{{ url_for('view_users') }}">View Users</a>
-    <a class="btn my-btn" href="{{ url_for('search') }}"><i class="fas fa-search"></i> Search for a lot</a>
-</div>
-
-<h1 class="display-6 my-4">Parking Lots</h1>
+<h1 class="display-6 my-display my-4">Parking Lots</h1>
+    <div class="d-flex justify-content-center"><a class="btn my-btn-alt" href="{{ url_for('add_lot') }}"><i class="fas fa-plus"></i> Create</a></div>
+    {%include 'search_bar.html' with context %}
 
 <div class="row g-3">
     {% if lots|length == 0 %}
-    <h2>No Lots Created</h2>
+    <h3 class="my-display my-4 text-center">No Lots Found</h3>
     {% else %}
     {% for lot in lots %}
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -55,4 +52,7 @@
     {% endfor %}
     {% endif %}
 </div>
+
+</div>
+
 {% endblock %}

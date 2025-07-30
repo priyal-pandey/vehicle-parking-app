@@ -33,7 +33,7 @@ class Spot(db.Model):
 
 class Reserve(db.Model):
     __tablename__ = 'reserve'
-    r_id = db.Column(db.Integer, primary_key=True)
+    reserve_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     lot_id = db.Column(db.Integer, db.ForeignKey('lot.lot_id'), nullable=False)
     spot_id = db.Column(db.Integer, db.ForeignKey('spot.spot_id'), nullable=False)
@@ -46,10 +46,11 @@ class Reserve(db.Model):
 class Payment(db.Model):
     __tablename__ = 'payment'
     payment_id = db.Column(db.Integer, primary_key=True)
-    r_id = db.Column(db.Integer, db.ForeignKey('reserve.r_id'), nullable=False)
+    reserve_id = db.Column(db.Integer, db.ForeignKey('reserve.reserve_id'), nullable=False)
     total_amt = db.Column(db.Double, nullable=False)
-    date = db.Column(db.Date)
-    time = db.Column(db.Time)
+    payment_method = db.Column(db.String, nullable = True)
+    transaction_date = db.Column(db.DateTime, nullable = True)
+
 
 with app.app_context():
     db.create_all()

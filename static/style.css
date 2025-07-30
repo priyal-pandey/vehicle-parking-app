@@ -1,6 +1,8 @@
 
 @import url('https://fonts.cdnfonts.com/css/norwester');
 @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
 *{
     margin:0px;
     padding:0px;
@@ -8,10 +10,16 @@
 
 body{
     font-family: 'Reddit Sans Condensed';
-    background: #323232;
+    background: #303030;
     min-height:100vh;
     color:#ffffe3;
 }
+
+.my-display{
+    font-family:'Jua';
+    justify-self: center;
+}
+
 
 .navbar-brand{
     font-family:'Norwester';
@@ -29,6 +37,7 @@ body{
     letter-spacing: 1px;
     transition: 0.3s;
 }
+
 
 .my-nav-link:hover{
    text-decoration: underline;
@@ -59,12 +68,13 @@ body{
 
  .auth-box{
     justify-self: center;
-    box-shadow: 0.5px 0.5px 0.5px 2px rgba(0, 0, 0, 0.101);
+    box-shadow: 0.5px 0.5px 0.5px 2px rgba(255, 255, 255, 0.066);
     width: 100%;
     max-width:450px;
     margin:20px;
     margin-top:70px !important;
     background-color: #27272745;
+
 }
 
 
@@ -101,7 +111,7 @@ button{
     letter-spacing: 1px;
 }
 
-.my-btn{
+.my-btn, .my-btn-alt:hover{
     color: #ffffe3;
     font-weight: bold;
     background-color: #5F9E9B;
@@ -109,9 +119,11 @@ button{
     border-color: #008080;
     border-width: 3px;
 }
-.my-btn:hover{
-    background-color: #030500c5;
+.my-btn-alt,.my-btn:hover{
+    background-color: #272727;
     color: #ffffe3;
+    border-color: #ffffe3;
+    border-width: 3px;
 }
 
 .my-input,.my-input:checked{
@@ -305,3 +317,14 @@ a:hover, a:focus, a:active {
     border-radius: 5px;
     overflow: hidden;
 }
+
+.my-container{
+    border-style: dashed;
+    border-color: #ffffe3;
+    border-width:3px;
+    border-radius:5px;
+    padding:30px;
+    max-width:800px;
+    justify-content: center;
+}
+

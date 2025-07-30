@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+{% include "admin/admin_nav.html" with context %}
+<div class="container my-5">
+<h1 class="display-6 my-display my-4">Parking Records</h1>
+<button class="btn my-btn-alt d-flex justify-content-center m-3" style="justify-self: center;" onclick="window.print();">Print</button>
+
+<table class="table my-table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">User ID</th>
+      <th scope="col">Lot ID</th>
+      <th scope="col">Spot ID</th>
+      <th scope="col">From Time</th>
+      <th scope="col">To Time</th>
+      <th scope="col">Vehicle no.</th>
+      <th scope="col">Price /hr</th>
+      <th scope="col">Status</th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in records%}
+    <tr>
+      <td scope="row">{{record.reserve_id}}</td>
+      <td>{{record.user_id}}</td>
+      <td>{{record.lot_id}}</td>
+      <td>{{record.spot_id}}</td>
+      <td>{{record.start_time.strftime('%d-%m-%Y %H:%M:%S')}}</td>
+      <td>
+         {%if record.end_time == None %}
+          Ongoing
+        {% else %}
+          {{record.end_time}}
+        {% endif %}
+      </td>
+      <td>{{record.vehicle_num}}</td>
+      <td>{{record.price_per_hr}}</td>
+      <td>
+        {%if record.is_ongoing %}
+          Parked In
+        {% else %}
+          Parked Out
+        {% endif %}
+      </td>
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

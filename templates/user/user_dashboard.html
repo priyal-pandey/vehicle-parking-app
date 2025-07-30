@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
+{% include "user/user_nav.html" with context %}
 
-<h1 class="display-5 mb-3">My Dashboard</h1>
-<h1 class="display-6">Recent Parking History</h1>
-<table class="table my-table table-hover">
+
+<div class="container my-5">
+{%if current|length != 0 %}
+  <h1 class="display-6 my-display my-4">My Current Booking</h1>
+    <table class="table my-table table-hover">
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Location</th>
-      <th scope="col">Date</th>
       <th scope="col">From Time</th>
       <th scope="col">To Time</th>
       <th scope="col">Vehicle no.</th>
@@ -18,33 +20,31 @@
     </tr>
   </thead>
   <tbody>
-    {% for record in history|reverse %}
+    {% for record in current %}
     <tr>
       <td scope="row">{{record.r_id}}</td>
       <td>{{record.lot_id}}</td>
-      <td>{{record.date}}</td>
-      <td>{{record.start_time}}</td>
+      <td>{{record.start_time.strftime('%d-%m-%Y %H:%M:%S')}}</td>
       <td>{{record.end_time}}</td>
       <td>{{record.vehicle_num}}</td>
       <td>{{record.price_per_hr}}</td>
       <td>
-        {%if record.is_ongoing %}
           <a class="btn my-btn" href="{{url_for('release_spot',lot_id = record.lot_id, spot_id = record.spot_id)}}">Release</a>
-        {% else %}
-          Parked Out
-        {% endif %}
       </td>
     </tr>
    {% endfor %}
   </tbody>
 </table>
+   {% endif %}
 
-<h1 class="display-6 my-4">Available Parking Lots</h1>
 
 
-<div class="row g-3">
+
+  <h1 class="display-6 my-display mt-5 mb-3">Parking Lots</h1>
+{%include 'search_bar.html' with context %}
+<div class="row g-3 mb-5">
     {% if lots|length == 0 %}
-    <h2>No Lots Available</h2>
+    <h3 class=" my-display my-5 text-center">No Lots Available</h3>
     {% else %}
     {% for lot in lots %}
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -83,6 +83,8 @@
     </div>
     {% endfor %}
     {% endif %}
+</div>
+
 </div>
 {% endblock %}
 

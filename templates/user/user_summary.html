@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}User Summary{% endblock %}
+{% block content %}
+{% include "user/user_nav.html" with context %}
+<div class="container my-5">
+<h1 class="display-6 my-display my-4">My Summary</h1>
+<table class="table my-table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Lot_id</th>
+      <th scope="col">From Time</th>
+      <th scope="col">To Time</th>
+      <th scope="col">Vehicle no.</th>
+      <th scope="col">Price/hr</th>
+      <th scope="col">Action</th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in history|reverse %}
+    <tr>
+      <td scope="row">{{record.reserve_id}}</td>
+      <td>{{record.lot_id}}</td>
+      <td>{{record.start_time.strftime('%d-%m-%Y %H:%M:%S')}}</td>
+      <td>
+        {%if record.end_time == None %}
+          Ongoing
+        {% else %}
+          {{record.end_time}}
+        {% endif %}
+      </td>
+      <td>{{record.vehicle_num}}</td>
+      <td>{{record.price_per_hr}}</td>
+      <td>
+        {%if record.is_ongoing %}
+          <a class="btn my-btn" href="{{url_for('release_spot',lot_id = record.lot_id, spot_id = record.spot_id)}}">Release</a>
+        {% else %}
+          Parked Out
+        {% endif %}
+      </td>
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

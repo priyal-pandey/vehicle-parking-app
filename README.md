@@ -7,7 +7,7 @@ This is a Flask-based web application that allows users to book, release, and ma
 
 ### 1. Clone the repository
 ```
-git clone https://github.com/23f2005558/vehicle-parking-app.git
+git clone https://github.com/priyal-pandey/vehicle-parking-app.git
 cd vehicle-parking-app
 ```
 
